@@ -1,5 +1,6 @@
 import 'package:artikel_wisata/screens/auth/login_screen.dart';
 import 'package:flutter/material.dart';
+import '../../controllers/auth_controller.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -10,6 +11,10 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   bool _isObscure = true;
+
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +69,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     SizedBox(height: 5),
                     TextFormField(
+                      controller: nameController,
                       decoration: InputDecoration(
                         hintText: 'Masukkan Nama Kamu',
                         enabledBorder: OutlineInputBorder(
@@ -100,6 +106,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     SizedBox(height: 5),
                     TextFormField(
+                      controller: usernameController,
                       decoration: InputDecoration(
                         hintText: 'Masukkan Username Anda',
                         enabledBorder: OutlineInputBorder(
@@ -136,6 +143,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     SizedBox(height: 5),
                     TextFormField(
+                      controller: passwordController,
                       obscureText: _isObscure,
                       decoration: InputDecoration(
                         hintText: 'Masukkan Password Anda',
@@ -184,7 +192,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               ElevatedButton(
-                onPressed: () => {},
+                onPressed: () async {
+                  final message = await AuthController.register(
+                    context, 
+                    nameController.text, 
+                    usernameController.text, 
+                    passwordController.text,
+                    );
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text(message)));
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0XFFD1A824),
                   minimumSize: Size(double.infinity, 55),
