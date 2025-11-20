@@ -1,5 +1,6 @@
 import 'package:artikel_wisata/screens/auth/register_screen.dart';
 import 'package:flutter/material.dart';
+import '../../controllers/auth_controller.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -10,6 +11,9 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _isObscure = true;
+
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 5),
                     TextFormField(
+                      controller: usernameController,
                       decoration: InputDecoration(
                         hintText: 'Masukkan Username Kamu',
                         enabledBorder: OutlineInputBorder(
@@ -94,7 +99,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 5),
                     TextFormField(
-                      obscureText: true,
+                      controller: passwordController,
+                      obscureText: _isObscure,
                       decoration: InputDecoration(
                         hintText: 'Masukkan Password Kamu',
                         enabledBorder: OutlineInputBorder(
@@ -148,7 +154,17 @@ class _LoginScreenState extends State<LoginScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               ElevatedButton(
-                onPressed: () => {},
+                onPressed: () async {
+                  final message = await AuthController.login(
+                    context, 
+                    usernameController.text, 
+                    passwordController.text
+                    );
+
+                    ScaffoldMessenger.of(
+                      context,
+                      ).showSnackBar(SnackBar(content: Text(message)));
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0XFFD1A824),
                   minimumSize: Size(double.infinity, 55),
