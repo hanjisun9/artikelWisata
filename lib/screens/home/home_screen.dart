@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:artikel_wisata/services/artikel_service.dart';
 import 'package:artikel_wisata/widgets/grid_artikel_populer.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/grid_artikel_populer.dart';
@@ -5,8 +8,53 @@ import '../../controllers/artikel_controller.dart';
 import '../../models/artikel_model.dart';
 import '../../widgets/grid_artikel_all.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  List<Artikel> artikelAll = [];
+  int page = 1;
+  final int limit = 5;
+  bool isLoading = false;
+  bool hasMore = true;
+  late Future<List<Artikel>> _futureArtikelPopuler;
+
+  @override
+  void initState() {
+    super.initState();
+    loadArtikel();  
+    _futureArtikelPopuler = ArtikelController.getArtikel(1, 4);
+  }
+
+  Future<void> loadArtikel() async {
+    if (isLoading || !hasMore) return;
+
+    setState(() => isLoading = true);
+
+    try {
+      final getArtikel = await ArtikelService.getArtikel(page, limit);
+      final totalData = jsonDecode(getArtikel.body)['totalData'];
+
+      final data = await ArtikelController.getArtikel(page, limit);
+
+      setState(() {
+        artikelAll.addAll(data);
+        if (artikelAll.length >= totalData) {
+          hasMore = false;
+        } else {
+          page++;
+        }
+      });
+    } catch (e) {
+      debugPrint('Gagal memuat artikel: $e');
+    } finally {
+      setState(() => isLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +119,7 @@ class HomeScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 10),
                 FutureBuilder(
-                  future: ArtikelController.getArtikel(),
+                  future: _futureArtikelPopuler,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const CircularProgressIndicator();
@@ -79,14 +127,10 @@ class HomeScreen extends StatelessWidget {
                       return Text('Error: ${snapshot.error}');
                     } else {
                       final artikelList = snapshot.data ?? [];
-                      final List<Artikel> artikelPopuler = artikelList
-                          .take(4)
-                          .toList();
-                      final List<Artikel> artikelAll = artikelList.toList();
 
                       return Column(
                         children: [
-                          GridArtikelPopuler(artikelList: artikelPopuler),
+                          GridArtikelPopuler(artikelList: artikelList),
                           SizedBox(height: 20),
                           Container(
                             width: double.infinity,
@@ -150,7 +194,7 @@ class HomeScreen extends StatelessWidget {
                                 'Artikel Lainnya',
                                 style: TextStyle(
                                   fontSize: 16,
-                                  fontWeight: FontWeight.bold
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                               Text(
@@ -159,11 +203,34 @@ class HomeScreen extends StatelessWidget {
                                   fontSize: 12,
                                   color: Color(0XFFD1A824),
                                 ),
-                              )
+                              ),
                             ],
                           ),
                           SizedBox(height: 10),
                           GridArtikelAll(artikelList: artikelAll),
+
+                          const SizedBox(height: 10),
+                          if (hasMore)
+                            Center(
+                              child: ElevatedButton(
+                                onPressed: isLoading ? null : loadArtikel,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0XFFD1A824),
+                                ),
+                                child: isLoading
+                                    ? const Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                        ),
+                                      )
+                                    : const Text('Load More'),
+                              ),
+                            )
+                          else
+                            Center(
+                              child: const Text('Semua artikel sudah dimuat'),
+                            ),
                         ],
                       );
                     }

@@ -1,4 +1,4 @@
-import 'package:artikel_wisata/screens/auth/login_screen.dart';
+import 'package:artikel_wisata/screens/articles/detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'screens/splash/splash_screen.dart'; 
 
@@ -14,6 +14,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Jelajah Nusantara',
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        fontFamily: 'Poppins',
+      ),
       home: const SplashScreen(),
     );
   }

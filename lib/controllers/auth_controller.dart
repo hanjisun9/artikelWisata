@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../screens/auth/login_screen.dart';
 import '../services/auth_service.dart';
 import '../screens/home/home_screen.dart';
+import '../widgets/bottom_navbar.dart';
 
 class AuthController {
   static Future<String> register(
@@ -47,7 +48,7 @@ class AuthController {
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
+        MaterialPageRoute(builder: (context) => const BottomNavbar()),
         );
 
         return responseData['message'] ?? "Login berhasil";
