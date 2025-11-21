@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../screens/home/home_screen.dart';
 import '../screens/articles/my_article_screen.dart';
+import '../screens/auth/profile_screen.dart';
 
 class BottomNavbar extends StatefulWidget {
   const BottomNavbar({super.key});
@@ -15,7 +16,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
   List<Widget> get _pages => [
     HomeScreen(),
     MyArticleScreen(),
-    Scaffold(body: Center(child: Text('Halaman Profile'))),
+    ProfileScreen()
   ];
 
   @override
