@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:artikel_wisata/screens/articles/my_article_screen.dart';
 import 'package:artikel_wisata/services/artikel_service.dart';
 import 'package:artikel_wisata/widgets/grid_artikel_populer.dart';
 import 'package:flutter/material.dart';
@@ -85,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Text('Lee Donghyuck', style: TextStyle(fontSize: 15)),
+                        Text('LeeDonghyuck', style: TextStyle(fontSize: 15)),
                       ],
                     ),
                     Spacer(),
@@ -175,7 +176,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                   CircleAvatar(
                                     backgroundColor: Colors.white,
                                     child: IconButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => const MyArticleScreen(),
+                                          )
+                                        );
+                                      },
                                       icon: const Icon(
                                         Icons.arrow_forward,
                                         color: Color(0XFFD1A824),

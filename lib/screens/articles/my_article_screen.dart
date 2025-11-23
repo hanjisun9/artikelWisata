@@ -82,7 +82,7 @@ class _MyArticleScreenState extends State<MyArticleScreen> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Text('Lee Donghyuck', style: TextStyle(fontSize: 15)),
+                        Text('LeeDonghyuck', style: TextStyle(fontSize: 15)),
                       ],
                     ),
                     Spacer(),
