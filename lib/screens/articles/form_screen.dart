@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
@@ -22,10 +23,9 @@ class _ArticelFormScreenState extends State<ArticelFormScreen> {
   final TextEditingController judulController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
 
-  // Simpan bytes + filename agar aman di Web & Mobile
   Uint8List? _imageBytes;
-  XFile? _pickedFile; // untuk ambil nama file
-  String? imagePath;  // opsional (fallback untuk Mobile), tidak dipakai di Web
+  XFile? _pickedFile;
+  String? imagePath; // fallback untuk Mobile (tidak dipakai di Web)
 
   bool _isLoading = false;
 
@@ -85,17 +85,22 @@ class _ArticelFormScreenState extends State<ArticelFormScreen> {
 
     try {
       final picker = ImagePicker();
-      final picked = await picker.pickImage(
-        source: source,
-        imageQuality: 80,
-      );
+      // Tanpa imageQuality -> resolusi asli
+      final picked = await picker.pickImage(source: source);
       if (picked != null) {
         final bytes = await picked.readAsBytes();
+
+        // Debug: cek resolusi asli
+        if (kDebugMode) {
+          ui.decodeImageFromList(bytes, (ui.Image img) {
+            // ignore: avoid_print
+            print('Picked image resolution: ${img.width}x${img.height}');
+          });
+        }
+
         setState(() {
           _pickedFile = picked;
           _imageBytes = bytes;
-          // Hanya isi imagePath untuk non-Web (untuk fallback),
-          // di Web path berupa blob: yang tidak bisa dipakai FileImage.
           imagePath = kIsWeb ? null : picked.path;
         });
       }
@@ -149,7 +154,7 @@ class _ArticelFormScreenState extends State<ArticelFormScreen> {
         id: widget.artikelId!,
         title: title.isNotEmpty ? title : null,
         description: description.isNotEmpty ? description : null,
-        imageBytes: _imageBytes, // boleh null
+        imageBytes: _imageBytes,
         imageName: _pickedFile?.name,
         context: context,
       );
@@ -188,11 +193,10 @@ class _ArticelFormScreenState extends State<ArticelFormScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Upload box sekarang bisa render dari bytes (aman di Web)
                 UploadGambarBox(
                   onTap: _pickImage,
                   imageBytes: _imageBytes,
-                  imagePath: imagePath, // fallback untuk Mobile (tidak dipakai di Web)
+                  imagePath: imagePath, // fallback mobile
                 ),
                 const SizedBox(height: 20),
                 const Text(
