@@ -25,7 +25,7 @@ class _ArticelFormScreenState extends State<ArticelFormScreen> {
 
   Uint8List? _imageBytes;
   XFile? _pickedFile;
-  String? imagePath; // fallback untuk Mobile (tidak dipakai di Web)
+  String? imagePath;
 
   bool _isLoading = false;
 
@@ -39,7 +39,9 @@ class _ArticelFormScreenState extends State<ArticelFormScreen> {
   void _showSnack(String message) {
     if (!mounted) return;
     ScaffoldMessenger.of(context).removeCurrentSnackBar();
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   Future<void> _pickImage() async {
@@ -59,7 +61,10 @@ class _ArticelFormScreenState extends State<ArticelFormScreen> {
                     padding: EdgeInsets.only(bottom: 8),
                     child: Text(
                       'Pilih Sumber Gambar',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ),
@@ -228,7 +233,8 @@ class _ArticelFormScreenState extends State<ArticelFormScreen> {
                     ),
                   ),
                   validator: (value) {
-                    if (!widget.isEdit && (value == null || value.trim().isEmpty)) {
+                    if (!widget.isEdit &&
+                        (value == null || value.trim().isEmpty)) {
                       return 'Judul tidak boleh kosong';
                     }
                     return null;
@@ -272,7 +278,8 @@ class _ArticelFormScreenState extends State<ArticelFormScreen> {
                     contentPadding: const EdgeInsets.all(12),
                   ),
                   validator: (value) {
-                    if (!widget.isEdit && (value == null || value.trim().isEmpty)) {
+                    if (!widget.isEdit &&
+                        (value == null || value.trim().isEmpty)) {
                       return 'Deskripsi tidak boleh kosong';
                     }
                     return null;
@@ -316,7 +323,9 @@ class _ArticelFormScreenState extends State<ArticelFormScreen> {
                         width: 20,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Colors.white,
+                          ),
                         ),
                       ),
                       SizedBox(width: 12),

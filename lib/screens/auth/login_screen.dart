@@ -1,6 +1,8 @@
+// login_screen.dart (tidak ada perubahan signifikan, hanya pastikan imports benar)
 import 'package:artikel_wisata/screens/auth/register_screen.dart';
 import 'package:flutter/material.dart';
 import '../../controllers/auth_controller.dart';
+import '../../widgets/bottom_navbar.dart'; // Tambahkan import ini
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -33,7 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     bottomRight: Radius.circular(50),
                   ),
                 ),
-                child: Align(
+                child: const Align( // Tambahkan const
                   alignment: Alignment.center,
                   child: Image(
                     image: AssetImage('assets/images/login.png'),
@@ -42,7 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-              const Text(
+              const Text( // Tambahkan const
                 'Login',
                 style: TextStyle(
                   color: Color(0XFFD1A824),
@@ -51,12 +53,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.all(20),
+                padding: const EdgeInsets.all(20), // Tambahkan const
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 10),
-                    Text(
+                    const SizedBox(height: 10), // Tambahkan const
+                    const Text( // Tambahkan const
                       'Username',
                       style: TextStyle(
                         color: Color(0XFFD1A824),
@@ -64,32 +66,32 @@ class _LoginScreenState extends State<LoginScreen> {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    const SizedBox(height: 5),
+                    const SizedBox(height: 5), // Tambahkan const
                     TextFormField(
                       controller: usernameController,
                       decoration: InputDecoration(
                         hintText: 'Masukkan Username Kamu',
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide: const BorderSide(
+                          borderSide: const BorderSide( // Tambahkan const
                             color: Color(0XFFD1A824),
                             width: 2,
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide: const BorderSide(
+                          borderSide: const BorderSide( // Tambahkan const
                             color: Color(0XFFD1A824),
                             width: 2,
                           ),
                         ),
-                        contentPadding: const EdgeInsets.symmetric(
+                        contentPadding: const EdgeInsets.symmetric( // Tambahkan const
                           vertical: 20.0,
                           horizontal: 15.0,
                         ),
                       ),
                     ),
-                    Text(
+                    const Text( // Tambahkan const
                       'Password',
                       style: TextStyle(
                         color: Color(0XFFD1A824),
@@ -97,7 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    const SizedBox(height: 5),
+                    const SizedBox(height: 5), // Tambahkan const
                     TextFormField(
                       controller: passwordController,
                       obscureText: _isObscure,
@@ -105,7 +107,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         hintText: 'Masukkan Password Kamu',
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide: const BorderSide(
+                          borderSide: const BorderSide( // Tambahkan const
                             color: Color(0XFFD1A824),
                             width: 2,
                           ),
@@ -113,12 +115,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide: const BorderSide(
+                          borderSide: const BorderSide( // Tambahkan const
                             color: Color(0XFFD1A824),
                             width: 2,
                           ),
                         ),
-                        contentPadding: const EdgeInsets.symmetric(
+                        contentPadding: const EdgeInsets.symmetric( // Tambahkan const
                           vertical: 20.0,
                           horizontal: 15.0,
                         ),
@@ -137,8 +139,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 5),
-                    Text(
+                    const SizedBox(height: 5), // Tambahkan const
+                    const Text( // Tambahkan const
                       'Lupa Password ?',
                       style: TextStyle(color: Color(0XFFD1A824)),
                     ),
@@ -149,7 +151,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
         bottomNavigationBar: Padding(
-          padding: EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20), // Tambahkan const
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -167,12 +169,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0XFFD1A824),
-                  minimumSize: Size(double.infinity, 55),
+                  minimumSize: const Size(double.infinity, 55), // Tambahkan const
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                child: Text(
+                child: const Text( // Tambahkan const
                   'Login',
                   style: TextStyle(
                     color: Colors.white,
@@ -192,10 +194,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  disabledBackgroundColor: Color(0XFFF6F2E5),
+                  backgroundColor: const Color(0XFFF6F2E5), // Gunakan backgroundColor
                   minimumSize: const Size(double.infinity, 55),
                   shape: RoundedRectangleBorder(
-                    side: BorderSide(color: Color(0XFFD1A824)),
+                    side: const BorderSide(color: Color(0XFFD1A824)), // Tambahkan const
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),

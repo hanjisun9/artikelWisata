@@ -32,14 +32,17 @@ class ArtikelController {
     }
   }
 
-  // =============== VERSI LAMA (File) — BIARKAN TETAP ADA ===============
   static Future<String> createArtikel(
     File image,
     String title,
     String description,
     BuildContext context,
   ) async {
-    final result = await ArtikelService.createArtikel(image, title, description);
+    final result = await ArtikelService.createArtikel(
+      image,
+      title,
+      description,
+    );
 
     final response = await http.Response.fromStream(result);
     final objectResponse = jsonDecode(response.body);
@@ -89,7 +92,6 @@ class ArtikelController {
     }
   }
 
-  // =============== VERSI BARU (BYTES) — AMAN UNTUK WEB ===============
   static Future<String> createArtikelWithBytes({
     required Uint8List imageBytes,
     required String imageName,

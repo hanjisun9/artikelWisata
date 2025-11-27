@@ -1,3 +1,4 @@
+// register_screen.dart (tidak ada perubahan signifikan, hanya pastikan imports benar)
 import 'package:artikel_wisata/screens/auth/login_screen.dart';
 import 'package:flutter/material.dart';
 import '../../controllers/auth_controller.dart';
@@ -20,7 +21,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Color(0XFFF6F2E5),
+        backgroundColor: const Color(0XFFF6F2E5), // Tambahkan const
         body: SingleChildScrollView(
           child: Column(
             children: [
@@ -34,7 +35,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     bottomRight: Radius.circular(50),
                   ),
                 ),
-                child: Align(
+                child: const Align( // Tambahkan const
                   alignment: Alignment.center,
                   child: Image(
                     image: AssetImage('assets/images/login.png'),
@@ -42,8 +43,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20), // Tambahkan const
+              const Text( // Tambahkan const
                 'Register',
                 style: TextStyle(
                   color: Color(0XFFD1A824),
@@ -52,14 +53,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.all(20), // Tambahkan const
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10), // Tambahkan const
 
                     // NAME
-                    Text(
+                    const Text( // Tambahkan const
                       'Name',
                       style: TextStyle(
                         color: Color(0XFFD1A824),
@@ -67,36 +68,36 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    SizedBox(height: 5),
+                    const SizedBox(height: 5), // Tambahkan const
                     TextFormField(
                       controller: nameController,
                       decoration: InputDecoration(
                         hintText: 'Masukkan Nama Kamu',
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(
+                          borderSide: const BorderSide( // Tambahkan const
                             color: Color(0XFFD1A824),
                             width: 2,
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(
+                          borderSide: const BorderSide( // Tambahkan const
                             color: Color(0XFFD1A824),
                             width: 2,
                           ),
                         ),
-                        contentPadding: EdgeInsets.symmetric(
+                        contentPadding: const EdgeInsets.symmetric( // Tambahkan const
                           vertical: 20,
                           horizontal: 20,
                         ),
                       ),
                     ),
 
-                    SizedBox(height: 15),
+                    const SizedBox(height: 15), // Tambahkan const
 
                     // USERNAME
-                    Text(
+                    const Text( // Tambahkan const
                       'Username',
                       style: TextStyle(
                         color: Color(0XFFD1A824),
@@ -104,36 +105,36 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    SizedBox(height: 5),
+                    const SizedBox(height: 5), // Tambahkan const
                     TextFormField(
                       controller: usernameController,
                       decoration: InputDecoration(
                         hintText: 'Masukkan Username Anda',
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(
+                          borderSide: const BorderSide( // Tambahkan const
                             color: Color(0XFFD1A824),
                             width: 2,
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(
+                          borderSide: const BorderSide( // Tambahkan const
                             color: Color(0xFFD1A824),
                             width: 2,
                           ),
                         ),
-                        contentPadding: EdgeInsets.symmetric(
+                        contentPadding: const EdgeInsets.symmetric( // Tambahkan const
                           vertical: 20,
                           horizontal: 20,
                         ),
                       ),
                     ),
 
-                    SizedBox(height: 15),
+                    const SizedBox(height: 15), // Tambahkan const
 
                     // PASSWORD
-                    Text(
+                    const Text( // Tambahkan const
                       'Password',
                       style: TextStyle(
                         color: Color(0XFFD1A824),
@@ -141,7 +142,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    SizedBox(height: 5),
+                    const SizedBox(height: 5), // Tambahkan const
                     TextFormField(
                       controller: passwordController,
                       obscureText: _isObscure,
@@ -149,19 +150,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         hintText: 'Masukkan Password Anda',
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(
+                          borderSide: const BorderSide( // Tambahkan const
                             color: Color(0XFFD1A824),
                             width: 2,
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(
+                          borderSide: const BorderSide( // Tambahkan const
                             color: Color(0XFFD1A824),
                             width: 2,
                           ),
                         ),
-                        contentPadding: EdgeInsets.symmetric(
+                        contentPadding: const EdgeInsets.symmetric( // Tambahkan const
                           vertical: 20,
                           horizontal: 20,
                         ),
@@ -170,7 +171,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             _isObscure
                                 ? Icons.visibility_off
                                 : Icons.visibility,
-                            color: Color(0XFFD1A824),
+                            color: const Color(0XFFD1A824), // Tambahkan const
                           ),
                           onPressed: () {
                             setState(() {
@@ -187,7 +188,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
         ),
         bottomNavigationBar: Padding(
-          padding: EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20), // Tambahkan const
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -205,12 +206,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0XFFD1A824),
-                  minimumSize: Size(double.infinity, 55),
+                  minimumSize: const Size(double.infinity, 55), // Tambahkan const
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadiusGeometry.circular(10),
+                    borderRadius: BorderRadius.circular(10), // Gunakan BorderRadius.circular
                   ),
                 ),
-                child: Text(
+                child: const Text( // Tambahkan const
                   'Register',
                   style: TextStyle(
                     color: Colors.white,
@@ -230,10 +231,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0XFFF6F2E5),
+                  backgroundColor: const Color(0XFFF6F2E5), // Gunakan backgroundColor
                   minimumSize: const Size(double.infinity, 55),
                   shape: RoundedRectangleBorder(
-                    side: BorderSide(color: Color(0XFFD1A824)),
+                    side: const BorderSide(color: Color(0XFFD1A824)), // Tambahkan const
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),

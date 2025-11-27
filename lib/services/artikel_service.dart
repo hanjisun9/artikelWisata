@@ -35,7 +35,6 @@ class ArtikelService {
     );
   }
 
-  // ========== VERSI LAMA (File/path) — biarkan tetap ada untuk Mobile ==========
   static Future<http.StreamedResponse> createArtikel(
     File image,
     String title,
@@ -87,7 +86,6 @@ class ArtikelService {
     return await request.send();
   }
 
-  // ========== VERSI BARU (BYTES) — untuk Web dan aman lintas platform ==========
   static Future<http.StreamedResponse> createArtikelBytes({
     required Uint8List imageBytes,
     required String imageName,
