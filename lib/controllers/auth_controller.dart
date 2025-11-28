@@ -48,8 +48,8 @@ class AuthController {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('token', token);
 
-      // Clear local data saat login baru
-      await prefs.remove('local_user_data');
+      // TIDAK clear local_user_data agar foto profile tetap tersimpan
+      // Hanya update data dari server jika perlu, tapi tetap pertahankan profileImage lokal
 
       Navigator.pushReplacement(
         context,
@@ -88,48 +88,57 @@ class AuthController {
     if (result.statusCode == 200) {
       final responseData = jsonDecode(result.body);
       final data = responseData['data'];
-      return User.fromJson(data);
+      
+      // Simpan data dari API ke lokal
+      final user = User.fromJson(data);
+      await prefs.setString('local_user_data', jsonEncode(user.toJson()));
+      
+      return user;
     } else {
       final responseData = jsonDecode(result.body);
       throw Exception(responseData['message'] ?? 'Gagal memuat data user');
     }
   }
 
-  // Update Profile Local (tanpa API)
+  // Update Profile Local (tanpa API) - Diperbarui dengan profileImage
   static Future<String> updateProfileLocal({
     required String name,
     required String username,
+    String? profileImage,
   }) async {
     try {
       final prefs = await SharedPreferences.getInstance();
 
-      // Ambil ID dari data yang ada
-      String odlId = '';
+      // Ambil data yang ada
+      String oldId = '';
+      String? oldProfileImage;
       final localUserData = prefs.getString('local_user_data');
 
       if (localUserData != null && localUserData.isNotEmpty) {
         final localData = jsonDecode(localUserData);
-        odlId = localData['id']?.toString() ?? '';
+        oldId = localData['id']?.toString() ?? '';
+        oldProfileImage = localData['profileImage']?.toString();
       }
 
       // Jika tidak ada local data, ambil ID dari API
-      if (odlId.isEmpty) {
+      if (oldId.isEmpty) {
         try {
           final result = await AuthService.getProfile();
           if (result.statusCode == 200) {
             final responseData = jsonDecode(result.body);
-            odlId = responseData['data']['id']?.toString() ?? '';
+            oldId = responseData['data']['id']?.toString() ?? '';
           }
         } catch (e) {
           // Ignore
         }
       }
 
-      // Buat user baru
+      // Buat user baru - gunakan foto baru jika ada, kalau tidak pakai yang lama
       final updatedUser = User(
-        id: odlId,
+        id: oldId,
         name: name,
         username: username,
+        profileImage: profileImage ?? oldProfileImage,
       );
 
       // Simpan ke SharedPreferences
@@ -141,15 +150,58 @@ class AuthController {
     }
   }
 
+  // Update Profile Image Only
+  static Future<String> updateProfileImage(String base64Image) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final localUserData = prefs.getString('local_user_data');
+
+      if (localUserData != null && localUserData.isNotEmpty) {
+        final localData = jsonDecode(localUserData);
+        localData['profileImage'] = base64Image;
+        await prefs.setString('local_user_data', jsonEncode(localData));
+        return 'Foto profile berhasil diupdate';
+      } else {
+        // Jika belum ada data lokal, buat baru
+        final result = await AuthService.getProfile();
+        if (result.statusCode == 200) {
+          final responseData = jsonDecode(result.body);
+          final data = responseData['data'];
+          data['profileImage'] = base64Image;
+          await prefs.setString('local_user_data', jsonEncode(data));
+          return 'Foto profile berhasil diupdate';
+        }
+        return 'Gagal mengupdate foto profile';
+      }
+    } catch (e) {
+      return 'Gagal mengupdate foto profile: $e';
+    }
+  }
+
+  // Get Profile Image
+  static Future<String?> getProfileImage() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final localUserData = prefs.getString('local_user_data');
+
+      if (localUserData != null && localUserData.isNotEmpty) {
+        final localData = jsonDecode(localUserData);
+        return localData['profileImage']?.toString();
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
   // Logout
   static Future<String> logout(BuildContext context) async {
     try {
       final result = await AuthService.Logout();
       final responseData = jsonDecode(result.body);
 
-      // Clear semua data lokal
+      // Hanya hapus token, TIDAK hapus local_user_data agar foto tetap ada
       final prefs = await SharedPreferences.getInstance();
-      await prefs.remove('local_user_data');
       await prefs.remove('token');
 
       Navigator.pushReplacement(
@@ -161,7 +213,6 @@ class AuthController {
     } catch (e) {
       // Tetap logout meski error
       final prefs = await SharedPreferences.getInstance();
-      await prefs.remove('local_user_data');
       await prefs.remove('token');
 
       Navigator.pushReplacement(

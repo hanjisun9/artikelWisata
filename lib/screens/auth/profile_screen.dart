@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import '../../controllers/artikel_controller.dart';
 import '../../controllers/auth_controller.dart';
@@ -17,6 +19,41 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   void _refreshProfile() {
     setState(() => _profileKey = UniqueKey());
+  }
+
+  // Widget untuk menampilkan foto profile
+  Widget _buildProfileImage(String? base64Image) {
+    if (base64Image != null && base64Image.isNotEmpty) {
+      try {
+        Uint8List bytes = base64Decode(base64Image);
+        return CircleAvatar(
+          radius: 50,
+          backgroundImage: MemoryImage(bytes),
+          backgroundColor: Colors.grey[300],
+        );
+      } catch (e) {
+        // Jika gagal decode, tampilkan default
+        return CircleAvatar(
+          radius: 50,
+          backgroundColor: Colors.grey[300],
+          child: const Icon(
+            Icons.person,
+            size: 50,
+            color: Colors.grey,
+          ),
+        );
+      }
+    } else {
+      return CircleAvatar(
+        radius: 50,
+        backgroundColor: Colors.grey[300],
+        child: const Icon(
+          Icons.person,
+          size: 50,
+          color: Colors.grey,
+        ),
+      );
+    }
   }
 
   @override
@@ -39,28 +76,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Avatar tetap
-                    const CircleAvatar(
-                      radius: 50,
-                      backgroundImage: AssetImage('assets/images/echan.jpeg'),
-                    ),
-                    const SizedBox(height: 10),
-                    
-                    // Nama & Username dari FutureBuilder
+                    // Avatar dan data dari FutureBuilder
                     FutureBuilder<User>(
                       key: _profileKey,
                       future: AuthController.getProfile(),
                       builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.waiting) {
-                          return const Text(
-                            'Memuat...',
-                            style: TextStyle(color: Colors.white),
+                          return Column(
+                            children: [
+                              CircleAvatar(
+                                radius: 50,
+                                backgroundColor: Colors.grey[300],
+                                child: const CircularProgressIndicator(
+                                  color: Color(0XFFD1A824),
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              const Text(
+                                'Memuat...',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ],
                           );
                         }
 
                         final user = snapshot.data;
                         return Column(
                           children: [
+                            // Foto Profile
+                            _buildProfileImage(user?.profileImage),
+                            const SizedBox(height: 10),
+                            // Nama
                             Text(
                               user?.name ?? 'User',
                               style: const TextStyle(
@@ -69,6 +115,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 color: Colors.white,
                               ),
                             ),
+                            // Username
                             Text(
                               '@${user?.username ?? 'username'}',
                               style: const TextStyle(color: Colors.white70),

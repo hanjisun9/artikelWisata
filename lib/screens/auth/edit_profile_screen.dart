@@ -1,4 +1,7 @@
+import 'dart:convert';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../controllers/auth_controller.dart';
 
 class EditProfile extends StatefulWidget {
@@ -11,9 +14,13 @@ class EditProfile extends StatefulWidget {
 class _EditProfileState extends State<EditProfile> {
   final TextEditingController nameC = TextEditingController();
   final TextEditingController usernameC = TextEditingController();
+  final ImagePicker _picker = ImagePicker();
 
   bool isLoading = true;
   bool isSaving = false;
+  
+  String? _currentImageBase64;
+  Uint8List? _selectedImageBytes;
 
   @override
   void initState() {
@@ -28,6 +35,14 @@ class _EditProfileState extends State<EditProfile> {
         setState(() {
           nameC.text = user.name;
           usernameC.text = user.username;
+          _currentImageBase64 = user.profileImage;
+          if (_currentImageBase64 != null && _currentImageBase64!.isNotEmpty) {
+            try {
+              _selectedImageBytes = base64Decode(_currentImageBase64!);
+            } catch (e) {
+              _selectedImageBytes = null;
+            }
+          }
           isLoading = false;
         });
       }
@@ -39,6 +54,98 @@ class _EditProfileState extends State<EditProfile> {
         );
       }
     }
+  }
+
+  Future<void> _pickImage() async {
+    try {
+      showModalBottomSheet(
+        context: context,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        builder: (context) => SafeArea(
+          child: Wrap(
+            children: [
+              ListTile(
+                leading: const Icon(Icons.photo_library, color: Color(0XFFD1A824)),
+                title: const Text('Pilih dari Galeri'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _getImage(ImageSource.gallery);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.camera_alt, color: Color(0XFFD1A824)),
+                title: const Text('Ambil Foto'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _getImage(ImageSource.camera);
+                },
+              ),
+              if (_selectedImageBytes != null)
+                ListTile(
+                  leading: const Icon(Icons.delete, color: Colors.red),
+                  title: const Text('Hapus Foto', style: TextStyle(color: Colors.red)),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _removeImage();
+                  },
+                ),
+            ],
+          ),
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    }
+  }
+
+  Future<void> _getImage(ImageSource source) async {
+    try {
+      final XFile? pickedFile = await _picker.pickImage(
+        source: source,
+        maxWidth: 512,
+        maxHeight: 512,
+        imageQuality: 75,
+      );
+
+      if (pickedFile != null) {
+        final bytes = await pickedFile.readAsBytes();
+        
+        // Cek ukuran file (maksimal 2MB setelah kompresi)
+        if (bytes.length > 2 * 1024 * 1024) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Ukuran gambar terlalu besar. Maksimal 2MB'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+          return;
+        }
+
+        setState(() {
+          _selectedImageBytes = bytes;
+          _currentImageBase64 = base64Encode(bytes);
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Gagal memilih gambar: $e')),
+        );
+      }
+    }
+  }
+
+  void _removeImage() {
+    setState(() {
+      _selectedImageBytes = null;
+      _currentImageBase64 = null;
+    });
   }
 
   Future<void> _saveProfile() async {
@@ -61,6 +168,7 @@ class _EditProfileState extends State<EditProfile> {
     final message = await AuthController.updateProfileLocal(
       name: nameC.text.trim(),
       username: usernameC.text.trim(),
+      profileImage: _currentImageBase64,
     );
 
     if (mounted) {
@@ -75,6 +183,62 @@ class _EditProfileState extends State<EditProfile> {
         Navigator.pop(context, true);
       }
     }
+  }
+
+  Widget _buildProfileImage() {
+    return Stack(
+      children: [
+        Container(
+          width: 120,
+          height: 120,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: const Color(0XFFD1A824),
+              width: 3,
+            ),
+          ),
+          child: ClipOval(
+            child: _selectedImageBytes != null
+                ? Image.memory(
+                    _selectedImageBytes!,
+                    width: 120,
+                    height: 120,
+                    fit: BoxFit.cover,
+                  )
+                : Container(
+                    color: Colors.grey[300],
+                    child: const Icon(
+                      Icons.person,
+                      size: 60,
+                      color: Colors.grey,
+                    ),
+                  ),
+          ),
+        ),
+        Positioned(
+          bottom: 0,
+          right: 0,
+          child: GestureDetector(
+            onTap: _pickImage,
+            child: Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: const Color(0XFFD1A824),
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.white, width: 2),
+              ),
+              child: const Icon(
+                Icons.camera_alt,
+                color: Colors.white,
+                size: 18,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   @override
@@ -107,6 +271,27 @@ class _EditProfileState extends State<EditProfile> {
                 padding: const EdgeInsets.all(25),
                 child: Column(
                   children: [
+                    const SizedBox(height: 10),
+
+                    // Profile Image
+                    Center(
+                      child: _buildProfileImage(),
+                    ),
+                    
+                    const SizedBox(height: 8),
+                    
+                    // Text hint untuk ganti foto
+                    TextButton(
+                      onPressed: _pickImage,
+                      child: const Text(
+                        'Ganti Foto Profile',
+                        style: TextStyle(
+                          color: Color(0XFFD1A824),
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+
                     const SizedBox(height: 20),
 
                     // Name
